@@ -5,6 +5,7 @@ import Board from './components/Board'
 import NumberPad from './components/NumberPad'
 import ModeChangePad from './components/ModeChangePad'
 import NoteToggle from './components/NoteToggle'
+import KeyboardHelp from './components/KeyboardHelp'
 
 
 
@@ -27,7 +28,7 @@ function App() {
 
       const target = e.target
       if (target instanceof HTMLElement && (
-        target.isContentEditable || target.closest('input, textarea, select, [role="textbox"]')
+        target.isContentEditable || target.closest('input, textarea, select, [role="textbox"], [data-keyboard-shortcuts="off"]')
       )) return
 
       if (e.key.toLowerCase() === 'm') {
@@ -170,22 +171,24 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center gap-6">
-      <h1 className="text-3xl font-mono font-bold text-black-600">
-        Sudoku Visualizer
-      </h1>
-      <Board
-        board={board}
-        mode={mode}
-        selectedCell={selectedCell}
-        setSelectedCell={setSelectedCell}
-        handleKeyDown={handleKeyDown}
-      />
-      <div className="flex w-full max-w-sm items-center justify-between gap-2 px-2">
-        <ModeChangePad setMode={handleModeChange} mode={mode} />
-        <NoteToggle setNotes={setNotes} notes={notes} mode={mode} />
-      </div>
-      <NumberPad handleInputNumber={handleInputNumber} />
+    <div className="relative min-h-screen bg-neutral-200 flex flex-col">
+      <KeyboardHelp />
+      <main className="flex flex-1 flex-col items-center justify-center gap-6 pb-8 pt-20">
+        <h1 className="text-3xl font-mono font-bold text-black">
+          Sudoku Visualizer
+        </h1>
+        <Board
+          board={board}
+          mode={mode}
+          selectedCell={selectedCell}
+          setSelectedCell={setSelectedCell}
+          handleKeyDown={handleKeyDown}
+        />
+        <div className="flex w-full max-w-sm items-center justify-between gap-2 px-2">
+          <ModeChangePad setMode={handleModeChange} mode={mode} />
+          <NoteToggle setNotes={setNotes} notes={notes} mode={mode} />
+        </div>
+        <NumberPad handleInputNumber={handleInputNumber} />
       </main>
       <footer className="px-4 pb-6 pt-2 text-center text-sm text-neutral-500">
         <a
