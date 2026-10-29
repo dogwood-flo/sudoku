@@ -1,15 +1,51 @@
-import { useState, type KeyboardEvent } from 'react'
-import { createInitialBoard } from './utils/board'
+import { useCallback, useEffect, useState, type KeyboardEvent } from 'react'
+import { createInitialBoard, getRelatedCells } from './utils/board'
+import type { CellPosition } from './types/sudoku'
 import Board from './components/Board'
 import NumberPad from './components/NumberPad'
 import ModeChangePad from './components/ModeChangePad'
+import NoteToggle from './components/NoteToggle'
 
 
 
 function App() {
   const [board, setBoard] = useState(createInitialBoard)
-  const [selectedCell, setSelectedCell] = useState<{ row: number; col: number, value: number | null } | null>(null)
-  const [mode, setMode] = useState<'create' | 'solve'>('create')
+  const [selectedCell, setSelectedCell] = useState<CellPosition | null>(null)
+  const [mode, setMode] = useState<'edit' | 'solve'>('edit')
+  const [notes, setNotes] = useState(false)
+
+  const handleModeChange = useCallback((nextMode: 'edit' | 'solve') => {
+    setMode(nextMode)
+    if (nextMode === 'edit') {
+      setNotes(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    const handleShortcut = (e: globalThis.KeyboardEvent) => {
+      if (e.defaultPrevented || e.isComposing || e.ctrlKey || e.metaKey || e.altKey) return
+
+      const target = e.target
+      if (target instanceof HTMLElement && (
+        target.isContentEditable || target.closest('input, textarea, select, [role="textbox"]')
+      )) return
+
+      if (e.key.toLowerCase() === 'm') {
+        e.preventDefault()
+        if (!e.repeat) {
+          handleModeChange(mode === 'edit' ? 'solve' : 'edit')
+        }
+      } else if (e.key === ' ') {
+        e.preventDefault()
+        if (mode === 'solve' && !e.repeat) {
+          setNotes((prevNotes) => !prevNotes)
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleShortcut)
+    return () => window.removeEventListener('keydown', handleShortcut)
+  }, [handleModeChange, mode])
 
   const handleInputNumber = (num: number | null) => {
     if (!selectedCell) return;
@@ -21,21 +57,51 @@ function App() {
       return;
     }
 
-    setBoard((prevBoard) => 
-      prevBoard.map((rList, rIdx) => 
+    setBoard((prevBoard) => {
+      const relatedCells = getRelatedCells(prevBoard, row, col)
+
+      return prevBoard.map((rList, rIdx) =>
         rList.map((cell, cIdx) => {
           if (rIdx === row && cIdx === col) {
+            let nextNotes = cell.notes
+
+            if (notes) {
+              nextNotes = new Set(cell.notes)
+              if (num === null) {
+                nextNotes.clear()
+              } else if (nextNotes.has(num)) {
+                nextNotes.delete(num)
+              } else {
+                nextNotes.add(num)
+              }
+            } else if (num !== null) {
+              nextNotes = new Set<number>()
+            }
+
             return {
               ...cell,
-              value: num,
-              fixed: mode === 'create' ? num !== null : cell.fixed 
+              value: notes ? cell.value : num,
+              notes: nextNotes,
+              fixed: mode === 'edit' ? num !== null : cell.fixed
             };
           }
+
+          if (
+            mode === 'solve' &&
+            !notes &&
+            num !== null &&
+            relatedCells.has(cell) &&
+            cell.notes.has(num)
+          ) {
+            const nextNotes = new Set(cell.notes)
+            nextNotes.delete(num)
+            return { ...cell, notes: nextNotes }
+          }
+
           return cell;
         })
       )
-    );
-    setSelectedCell({ row, col, value: num })
+    });
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -67,7 +133,7 @@ function App() {
 
     if (!selectedCell) {
       e.preventDefault()
-      setSelectedCell({ row: 0, col: 0 , value: board[0][0].value})
+      setSelectedCell({ row: 0, col: 0 })
       return
     }
 
@@ -100,12 +166,12 @@ function App() {
     }
 
     e.preventDefault()
-    setSelectedCell({ row, col, value: board[row][col].value })
+    setSelectedCell({ row, col })
   }
 
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center gap-6">
-      <h1 className="text-3xl font-bold text-blue-600">
+      <h1 className="text-3xl font-mono font-bold text-black-600">
         Sudoku Visualizer
       </h1>
       <Board
@@ -115,7 +181,10 @@ function App() {
         setSelectedCell={setSelectedCell}
         handleKeyDown={handleKeyDown}
       />
-      <ModeChangePad setMode={setMode} mode={mode} />
+      <div className="flex w-full max-w-sm items-center justify-between gap-2 px-2">
+        <ModeChangePad setMode={handleModeChange} mode={mode} />
+        <NoteToggle setNotes={setNotes} notes={notes} mode={mode} />
+      </div>
       <NumberPad handleInputNumber={handleInputNumber} />
     </div>
   )

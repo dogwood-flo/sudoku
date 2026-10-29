@@ -58,24 +58,24 @@ export function getRelatedCells(board: CellData[][], row: number, col: number): 
 
 export function hilightCells(
   cell: CellData,
-  mode: 'create' | 'solve',
+  mode: 'edit' | 'solve',
   relatedCells: Set<CellData>,
-  selectedCell: { row: number; col: number, value: number | null } | null,
+  selectedValue: number | null,
   isSelected: boolean
 ): string {
   let backgroundColor = ''
   let illegalFlag = false
 
   if (isSelected) {
-    backgroundColor = 'bg-blue-200'
-  } else if (selectedCell?.value != null && cell.value === selectedCell.value) {
-    backgroundColor = 'bg-blue-100'
+    backgroundColor = 'bg-blue-300'
+  } else if (selectedValue !== null && cell.value === selectedValue) {
+    backgroundColor = 'bg-gray-200'
     illegalFlag = relatedCells.has(cell) ? true : false
   } else if (relatedCells.has(cell)) {
-    backgroundColor = 'bg-gray-200'
+    backgroundColor = 'bg-blue-100'
   }
 
-  let textColor = mode === 'create' || !cell.fixed ? 'text-blue-600' : 'text-slate-900'
+  let textColor = mode === 'edit' || !cell.fixed ? 'text-blue-600' : 'text-slate-900'
 
   if (illegalFlag) {
     backgroundColor = 'bg-red-200'

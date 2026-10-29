@@ -1,34 +1,49 @@
-export default function ModeChangePad({ setMode, mode }: { setMode: (mode: 'create' | 'solve') => void; mode: 'create' | 'solve' }) {
+type ModeChangePadProps = {
+    setMode: (mode: 'edit' | 'solve') => void
+    mode: 'edit' | 'solve'
+}
+
+export default function ModeChangePad({ setMode, mode }: ModeChangePadProps) {
     return (
-        <div className="flex gap-2">
-            <button 
-                onClick={() => {
-                    console.log('Switched to create mode')
-                    setMode('create')
-                }}
+        <button
+            type="button"
+            role="switch"
+            aria-label="Solve mode"
+            aria-keyshortcuts="M"
+            title="モード切り替え（M）"
+            aria-checked={mode === 'solve'}
+            onClick={() => setMode(mode === 'edit' ? 'solve' : 'edit')}
+            className="
+                inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-2
+                rounded-lg px-2 font-medium
+                focus-visible:outline-none focus-visible:ring-2
+                focus-visible:ring-blue-500 focus-visible:ring-offset-2
+            "
+        >
+            <span className={mode === 'edit' ? 'text-blue-600' : 'text-slate-500'}>
+                Edit
+            </span>
+
+            <span
+                aria-hidden="true"
                 className={`
-                    text-white px-4 py-2 rounded border-2
-                    ${mode === 'create' ? 'bg-blue-500 border-blue-500' : 'bg-blue-200 border-blue-200'}
-                    hover:border-blue-500
+                    inline-flex h-6 w-11 shrink-0 items-center rounded-full p-0.5
+                    transition-colors motion-reduce:transition-none
+                    ${mode === 'solve' ? 'bg-green-500' : 'bg-blue-500'}
                 `}
-                aria-pressed={mode === 'create'}
             >
-                Create
-            </button>
-            <button
-                onClick={() => {
-                    console.log('Switched to solve mode')
-                    setMode('solve')
-                }}
-                className={`
-                    text-white px-4 py-2 rounded border-2
-                    ${mode === 'solve' ? 'bg-green-500 border-green-500' : 'bg-green-200 border-green-200'}
-                    hover:border-green-500
-                `}
-                aria-pressed={mode === 'solve'}
-            >
+                <span
+                    className={`
+                        h-5 w-5 rounded-full bg-white shadow-sm
+                        transition-transform motion-reduce:transition-none
+                        ${mode === 'solve' ? 'translate-x-5' : 'translate-x-0'}
+                    `}
+                />
+            </span>
+
+            <span className={mode === 'solve' ? 'text-green-600' : 'text-slate-500'}>
                 Solve
-            </button>
-        </div>
+            </span>
+        </button>
     )
 }
