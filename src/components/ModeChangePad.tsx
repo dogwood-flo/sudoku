@@ -15,12 +15,12 @@ export default function ModeChangePad({ setMode, mode }: ModeChangePadProps) {
             onClick={() => setMode(mode === 'edit' ? 'solve' : 'edit')}
             className="
                 inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-2
-                rounded-lg px-2 font-medium
+                font-mono rounded-lg px-2 font-bold
                 focus-visible:outline-none focus-visible:ring-2
-                focus-visible:ring-blue-500 focus-visible:ring-offset-2
+                focus-visible:ring-sky-500 focus-visible:ring-offset-2
             "
         >
-            <span className={mode === 'edit' ? 'text-blue-600' : 'text-slate-500'}>
+            <span className={mode === 'edit' ? 'text-sky-600' : 'text-neutral-500'}>
                 Edit
             </span>
 
@@ -29,7 +29,7 @@ export default function ModeChangePad({ setMode, mode }: ModeChangePadProps) {
                 className={`
                     inline-flex h-6 w-11 shrink-0 items-center rounded-full p-0.5
                     transition-colors motion-reduce:transition-none
-                    ${mode === 'solve' ? 'bg-green-500' : 'bg-blue-500'}
+                    ${mode === 'solve' ? 'bg-lime-500' : 'bg-sky-500'}
                 `}
             >
                 <span
@@ -41,7 +41,7 @@ export default function ModeChangePad({ setMode, mode }: ModeChangePadProps) {
                 />
             </span>
 
-            <span className={mode === 'solve' ? 'text-green-600' : 'text-slate-500'}>
+            <span className={mode === 'solve' ? 'text-lime-600' : 'text-neutral-500'}>
                 Solve
             </span>
         </button>

@@ -67,19 +67,19 @@ export function hilightCells(
   let illegalFlag = false
 
   if (isSelected) {
-    backgroundColor = 'bg-blue-300'
+    backgroundColor = 'bg-lime-300'
   } else if (selectedValue !== null && cell.value === selectedValue) {
-    backgroundColor = 'bg-gray-200'
+    backgroundColor = 'bg-neutral-200'
     illegalFlag = relatedCells.has(cell) ? true : false
   } else if (relatedCells.has(cell)) {
-    backgroundColor = 'bg-blue-100'
+    backgroundColor = 'bg-lime-100'
   }
 
-  let textColor = mode === 'edit' || !cell.fixed ? 'text-blue-600' : 'text-slate-900'
+  let textColor = mode === 'edit' || !cell.fixed ? 'text-lime-600' : 'text-neutral-900'
 
   if (illegalFlag) {
-    backgroundColor = 'bg-red-200'
-    textColor = 'text-red-600'
+    backgroundColor = 'bg-amber-200'
+    textColor = 'text-amber-600'
   }
 
   return `${backgroundColor} ${textColor}`.trim()

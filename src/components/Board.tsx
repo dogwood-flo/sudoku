@@ -25,7 +25,7 @@ export default function Board({ board, mode, selectedCell, setSelectedCell, hand
       onKeyDown={handleKeyDown}
       onClick={(e) => e.currentTarget.focus()}
       aria-label="数独の盤面"
-      className="relative w-full max-w-sm border-2 border-slate-700 bg-white focus:outline-none"
+      className="relative w-full max-w-sm border-2 border-neutral-700 bg-white focus:outline-none"
     >
         <div className="grid aspect-square grid-cols-9 grid-rows-9">
             {board.flat().map((cell) => (
@@ -37,7 +37,7 @@ export default function Board({ board, mode, selectedCell, setSelectedCell, hand
                         const alreadySelected = isSelected(cell.row, cell.col)
                         setSelectedCell( alreadySelected ? null : { row: cell.row, col: cell.col })
                     }}
-                    className={`flex min-h-0 min-w-0 items-center justify-center border-b border-r border-slate-300 text-2xl
+                    className={`flex min-h-0 min-w-0 items-center justify-center border-b border-r border-neutral-300 text-2xl
                         [&:nth-child(9n)]:border-r-0 [&:nth-last-child(-n+9)]:border-b-0
                         ${hilightCells(cell, mode, relatedCells, selectedValue, isSelected(cell.row, cell.col))}
                     `}
@@ -48,7 +48,7 @@ export default function Board({ board, mode, selectedCell, setSelectedCell, hand
                                 <div
                                     key={n}
                                     className={`flex items-center justify-center text-xs
-                                        ${n === selectedValue ? 'font-bold text-slate-800' : 'font-normal text-slate-500'}
+                                        ${n === selectedValue ? 'font-bold text-neutral-800' : 'font-normal text-neutral-500'}
                                     `}
                                 >
                                     {cell.notes.has(n) ? n : null}
@@ -61,7 +61,7 @@ export default function Board({ board, mode, selectedCell, setSelectedCell, hand
         </div>
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 grid grid-cols-3 grid-rows-3">
             {[...Array(9)].map((_, i) => (
-                <div key={i} className="border-b-2 border-r-2 border-slate-700 [&:nth-child(3n)]:border-r-0 [&:nth-last-child(-n+3)]:border-b-0" />
+                <div key={i} className="border-b-2 border-r-2 border-neutral-700 [&:nth-child(3n)]:border-r-0 [&:nth-last-child(-n+3)]:border-b-0" />
             ))}
         </div>
     </div>

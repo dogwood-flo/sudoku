@@ -186,6 +186,20 @@ function App() {
         <NoteToggle setNotes={setNotes} notes={notes} mode={mode} />
       </div>
       <NumberPad handleInputNumber={handleInputNumber} />
+      </main>
+      <footer className="px-4 pb-6 pt-2 text-center text-sm text-neutral-500">
+        <a
+          href="https://github.com/dogwood-flo/sudoku"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded underline underline-offset-4 hover:text-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-500 focus-visible:ring-offset-2"
+        >
+          <svg aria-hidden="true" focusable="false" viewBox="0 0 19 19" className="h-5 w-5 shrink-0">
+            <use href={`${import.meta.env.BASE_URL}icons.svg#github-icon`} />
+          </svg>
+          <span>dogwood-flo/sudoku</span>
+        </a>
+      </footer>
     </div>
   )
 }
