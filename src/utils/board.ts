@@ -64,16 +64,23 @@ export function hilightCells(
   isSelected: boolean
 ): string {
   let backgroundColor = ''
+  let illegalFlag = false
 
   if (isSelected) {
     backgroundColor = 'bg-blue-200'
   } else if (selectedCell?.value != null && cell.value === selectedCell.value) {
     backgroundColor = 'bg-blue-100'
+    illegalFlag = relatedCells.has(cell) ? true : false
   } else if (relatedCells.has(cell)) {
     backgroundColor = 'bg-gray-200'
   }
 
-  const textColor = mode === 'create' || !cell.fixed ? 'text-blue-600' : 'text-slate-900'
+  let textColor = mode === 'create' || !cell.fixed ? 'text-blue-600' : 'text-slate-900'
+
+  if (illegalFlag) {
+    backgroundColor = 'bg-red-200'
+    textColor = 'text-red-600'
+  }
 
   return `${backgroundColor} ${textColor}`.trim()
 }
