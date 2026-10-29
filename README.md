@@ -30,3 +30,16 @@ If you are developing a production application, we recommend enabling type-aware
 ```
 
 See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+
+## GitHub Pages
+
+The site is configured for https://dogwood-flo.github.io/sudoku/.
+
+1. In the repository's **Settings → Pages**, set **Source** to **GitHub Actions**.
+2. Push the project and `.github/workflows/deploy.yml` to `main`.
+3. Check the **Deploy to GitHub Pages** workflow in the **Actions** tab.
+
+Future pushes to `main` automatically build and deploy the site. You can also
+deploy manually with **Run workflow**. The workflow uses Node.js 24.
+
+Vite's base path is `/sudoku/`. Local development and previews use the same path.
