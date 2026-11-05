@@ -12,6 +12,7 @@ export function createInitialBoard(): CellData[][] {
         value: null,
         fixed: false,
         notes: new Set<number>(),
+        candidates: new Set<number>()
       }
     }
   }

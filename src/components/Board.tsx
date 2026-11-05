@@ -32,7 +32,7 @@ export default function Board({ board, mode, selectedCell, setSelectedCell, hand
                 <div
                     key={`${cell.row}-${cell.col}`}
                     onClick={() => {
-                        console.log(`Clicked cell at row ${cell.row}, col ${cell.col}, value ${cell?.value}`)
+                        console.log(`Clicked cell at row ${cell.row}, col ${cell.col}, value ${cell?.value}.\nCell Information:\nFixed: ${cell.fixed}\nNotes: ${Array.from(cell.notes).join(', ')}\nCandidates: ${Array.from(cell.candidates).join(', ')}`)
 
                         const alreadySelected = isSelected(cell.row, cell.col)
                         setSelectedCell( alreadySelected ? null : { row: cell.row, col: cell.col })
@@ -67,3 +67,20 @@ export default function Board({ board, mode, selectedCell, setSelectedCell, hand
     </div>
   )
 }
+
+
+
+// function getCompletionStatus(board: CellData[][]) : 'complete' | 'incomplete' | 'invalid' {
+//     for (const cell of board.flat()) {
+//         if (cell.value === null) {
+//             return 'incomplete'
+//         }
+
+        
+
+//         const box_row_idx = Math.floor(cell.row / 3) * 3
+//         const box_col_idx = Math.floor(cell.col / 3) * 3
+
+
+//     }
+// }

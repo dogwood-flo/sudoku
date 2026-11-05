@@ -6,6 +6,8 @@ import NumberPad from './components/NumberPad'
 import ModeChangePad from './components/ModeChangePad'
 import NoteToggle from './components/NoteToggle'
 import KeyboardHelp from './components/KeyboardHelp'
+import SolverMenu from './components/SolverMenu'
+import type { AlgorithmId, CandidateGrid } from './solver/assist'
 
 
 
@@ -14,6 +16,21 @@ function App() {
   const [selectedCell, setSelectedCell] = useState<CellPosition | null>(null)
   const [mode, setMode] = useState<'edit' | 'solve'>('edit')
   const [notes, setNotes] = useState(false)
+
+  const [solverSettings, setSolverSettings] = useState<Set<AlgorithmId>>(new Set())
+
+  const handleCandidatesGenerated = (candidates: CandidateGrid) => {
+    setBoard((prevBoard) =>
+      prevBoard.map((row, rowIndex) =>
+        row.map((cell, colIndex) => ({
+          ...cell,
+          notes: cell.value === null
+            ? new Set(candidates[rowIndex][colIndex])
+            : new Set<number>(),
+        }))
+      )
+    )
+  }
 
   const handleModeChange = useCallback((nextMode: 'edit' | 'solve') => {
     setMode(nextMode)
@@ -63,10 +80,13 @@ function App() {
 
       return prevBoard.map((rList, rIdx) =>
         rList.map((cell, cIdx) => {
+
+          // 選択セルと同じ位置のセルの更新
           if (rIdx === row && cIdx === col) {
             let nextNotes = cell.notes
 
             if (notes) {
+              // notesモードの場合、セルのnotesを更新する。
               nextNotes = new Set(cell.notes)
               if (num === null) {
                 nextNotes.clear()
@@ -76,6 +96,7 @@ function App() {
                 nextNotes.add(num)
               }
             } else if (num !== null) {
+              // notesモードでない場合、セルのvalueを更新する。valueの配置に伴いnotesは初期化される。
               nextNotes = new Set<number>()
             }
 
@@ -170,6 +191,7 @@ function App() {
     setSelectedCell({ row, col })
   }
 
+
   return (
     <div className="relative min-h-screen bg-neutral-200 flex flex-col">
       <KeyboardHelp />
@@ -177,18 +199,29 @@ function App() {
         <h1 className="text-3xl font-mono font-bold text-black">
           Sudoku Visualizer
         </h1>
-        <Board
-          board={board}
-          mode={mode}
-          selectedCell={selectedCell}
-          setSelectedCell={setSelectedCell}
-          handleKeyDown={handleKeyDown}
-        />
-        <div className="flex w-full max-w-sm items-center justify-between gap-2 px-2">
-          <ModeChangePad setMode={handleModeChange} mode={mode} />
-          <NoteToggle setNotes={setNotes} notes={notes} mode={mode} />
+        <div className="grid w-full items-start justify-items-center grid-cols-1 max-w-3xl gap-6 px-4 md:grid-cols-[30rem_18rem] md:justify-center">
+          <div className="flex w-full max-w-sm flex-col items-center gap-4">
+            <Board
+              board={board}
+              mode={mode}
+              selectedCell={selectedCell}
+              setSelectedCell={setSelectedCell}
+              handleKeyDown={handleKeyDown}
+            />
+            <div className="flex w-full max-w-sm items-center justify-between gap-2 px-2">
+              <ModeChangePad setMode={handleModeChange} mode={mode} />
+              <NoteToggle setNotes={setNotes} notes={notes} mode={mode} />
+            </div>
+            <NumberPad handleInputNumber={handleInputNumber} />
+          </div>
+          <SolverMenu
+            board={board}
+            solverSettings={solverSettings}
+            setSolverSettings={setSolverSettings}
+            onCandidatesGenerated={handleCandidatesGenerated}
+          />
         </div>
-        <NumberPad handleInputNumber={handleInputNumber} />
+
       </main>
       <footer className="px-4 pb-6 pt-2 text-center text-sm text-neutral-500">
         <a
