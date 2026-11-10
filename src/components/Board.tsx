@@ -1,6 +1,6 @@
 import type { KeyboardEvent } from 'react'
 import type { CellData, CellPosition } from '../types/sudoku'
-import { getRelatedCells, hilightCells } from '../utils/board'
+import { getRelatedCells, hilightCells, hilightNotes} from '../utils/board'
 
 type BoardProps = {
   board: CellData[][]
@@ -32,7 +32,16 @@ export default function Board({ board, mode, selectedCell, setSelectedCell, hand
                 <div
                     key={`${cell.row}-${cell.col}`}
                     onClick={() => {
-                        console.log(`Clicked cell at row ${cell.row}, col ${cell.col}, value ${cell?.value}`)
+                      console.log(`Clicked cell at
+                        row ${cell.row},
+                        col ${cell.col},
+                        value ${cell?.value}.\n
+                        valueTag: ${cell?.valueTag}\n
+                        Cell Information:\n
+                        Fixed: ${cell.fixed}\n
+                        Notes: ${Array.from(cell.notes).join(', ')}\n
+                        NotesTags: ${Array.from(cell.notesTags).join(', ')}\n
+                        Candidates: ${Array.from(cell.candidates).join(', ')}`)
 
                         const alreadySelected = isSelected(cell.row, cell.col)
                         setSelectedCell( alreadySelected ? null : { row: cell.row, col: cell.col })
@@ -48,10 +57,10 @@ export default function Board({ board, mode, selectedCell, setSelectedCell, hand
                                 <div
                                     key={n}
                                     className={`flex items-center justify-center text-xs
-                                        ${n === selectedValue ? 'font-bold text-neutral-800' : 'font-normal text-neutral-500'}
+                                        ${hilightNotes(cell, n, selectedValue)}
                                     `}
                                 >
-                                    {cell.notes.has(n) ? n : null}
+                                    {cell.notes.has(n) || cell.notesTags[n - 1] != null ? n : null}
                                 </div>
                             ))}
                         </div>
@@ -67,3 +76,20 @@ export default function Board({ board, mode, selectedCell, setSelectedCell, hand
     </div>
   )
 }
+
+
+
+// function getCompletionStatus(board: CellData[][]) : 'complete' | 'incomplete' | 'invalid' {
+//     for (const cell of board.flat()) {
+//         if (cell.value === null) {
+//             return 'incomplete'
+//         }
+
+
+
+//         const box_row_idx = Math.floor(cell.row / 3) * 3
+//         const box_col_idx = Math.floor(cell.col / 3) * 3
+
+
+//     }
+// }
