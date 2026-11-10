@@ -27,6 +27,17 @@ function App() {
           notes: cell.value === null
             ? new Set(candidates[rowIndex][colIndex])
             : new Set<number>(),
+          notesTags: [1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => {
+            if (cell.notes.has(i) && !candidates[rowIndex][colIndex].has(i)) {
+              return 'assist_eliminated'
+            }
+            else if (!cell.notes.has(i) && candidates[rowIndex][colIndex].has(i)) {
+              return 'assist_placed'
+            }
+            else {
+              return null
+            }
+          })
         }))
       )
     )
@@ -103,7 +114,9 @@ function App() {
             return {
               ...cell,
               value: notes ? cell.value : num,
+              valueTag: null,
               notes: nextNotes,
+              notesTags: Array(9).fill(null),
               fixed: mode === 'edit' ? num !== null : cell.fixed
             };
           }
@@ -116,11 +129,14 @@ function App() {
             cell.notes.has(num)
           ) {
             const nextNotes = new Set(cell.notes)
+            const nextNotesTags = cell.notesTags
             nextNotes.delete(num)
-            return { ...cell, notes: nextNotes }
+            nextNotesTags[num - 1] = null
+
+            return { ...cell, notes: nextNotes, notesTags: Array(9).fill(null) }
           }
 
-          return cell;
+          return { ...cell, notesTags: Array(9).fill(null) };
         })
       )
     });

@@ -10,9 +10,11 @@ export function createInitialBoard(): CellData[][] {
         row,
         col,
         value: null,
+        valueTag: null,
         fixed: false,
         notes: new Set<number>(),
-        candidates: new Set<number>()
+        notesTags: Array(9).fill(null),
+        candidates: new Set<number>(),
       }
     }
   }
@@ -62,7 +64,8 @@ export function hilightCells(
   mode: 'edit' | 'solve',
   relatedCells: Set<CellData>,
   selectedValue: number | null,
-  isSelected: boolean
+  isSelected: boolean,
+  // ranAssist: boolean
 ): string {
   let backgroundColor = ''
   let illegalFlag = false
@@ -84,4 +87,32 @@ export function hilightCells(
   }
 
   return `${backgroundColor} ${textColor}`.trim()
+}
+
+
+export function hilightNotes(
+  cell: CellData,
+  n: number,
+  selectedValue: number | null
+): string {
+  let fontStyle = 'font-normal'
+  let textColor = 'text-neutral-500'
+
+  if (n === selectedValue) {
+    fontStyle = 'font-bold'
+    textColor = 'text-neutral-800'
+  }
+
+  if (cell.notesTags[n - 1] === 'assist_eliminated') {
+    // fontStyle = 'font-normal'
+    textColor = 'text-rose-300'
+    n === selectedValue && (fontStyle = 'font-bold', textColor = 'text-rose-500')
+  }
+  else if (cell.notesTags[n - 1] === 'assist_placed') {
+    // fontStyle = 'font-normal'
+    textColor = 'text-blue-300'
+    n === selectedValue && (fontStyle = 'font-bold', textColor = 'text-blue-500')
+  }
+
+  return `${fontStyle} ${textColor}`.trim()
 }
